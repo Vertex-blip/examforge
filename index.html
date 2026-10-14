@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a2b">
+  <meta name="description" content="Create your own question bank, take timed practice tests, and learn from every mistake.">
+  <title>ExamForge — Study with intention</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-shell">
+    <header class="site-header"><a class="brand" href="./" aria-label="ExamForge home"><span class="brand-mark" aria-hidden="true">EF<span>.</span></span><span class="brand-word">EXAMFORGE</span></a><nav id="main-nav" aria-label="Main navigation"><button type="button" data-view="overview">Overview</button><button type="button" data-view="bank">Question bank</button><button type="button" data-view="history">History</button></nav><button type="button" class="header-cta" data-new-question><span aria-hidden="true">＋</span> Add question</button></header>
+    <main id="main" tabindex="-1"></main>
+    <footer class="site-footer"><div><span class="footer-mark">EF.</span> Built for the work before the win.</div><div>Your questions stay in this browser · No account needed</div></footer>
+  </div>
+  <dialog id="question-dialog" class="question-dialog">
+    <form id="question-form">
+      <header><span class="mini-label">QUESTION EDITOR</span><button type="button" data-close-dialog aria-label="Close dialog">×</button></header>
+      <h2 id="dialog-title">Add a question</h2><p>Make the answer clear enough that future you can learn from it.</p>
+      <input type="hidden" name="id">
+      <div class="form-row"><label for="topic">Topic</label><input id="topic" name="topic" type="text" maxlength="60" required placeholder="e.g. Biology"></div>
+      <div class="form-row"><label for="prompt">Question</label><textarea id="prompt" name="prompt" maxlength="400" rows="3" required placeholder="What would you like to remember?"></textarea></div>
+      <div class="answer-grid"><div class="form-row"><label for="option-0">Answer A</label><input id="option-0" name="option-0" type="text" maxlength="200" required></div><div class="form-row"><label for="option-1">Answer B</label><input id="option-1" name="option-1" type="text" maxlength="200" required></div><div class="form-row"><label for="option-2">Answer C</label><input id="option-2" name="option-2" type="text" maxlength="200" required></div><div class="form-row"><label for="option-3">Answer D</label><input id="option-3" name="option-3" type="text" maxlength="200" required></div></div>
+      <div class="form-row"><label for="answer">Correct answer</label><select id="answer" name="answer"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div>
+      <div class="form-row"><label for="explanation">Why is it correct? <span>(optional)</span></label><textarea id="explanation" name="explanation" maxlength="500" rows="2" placeholder="A short explanation helps during review."></textarea></div>
+      <div class="dialog-actions"><button type="button" class="cancel-button" data-close-dialog>Cancel</button><button class="save-button" type="submit">Save question <span aria-hidden="true">↗</span></button></div>
+    </form>
+  </dialog>
+  <input id="import-file" type="file" accept="application/json,.json" hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
