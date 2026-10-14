@@ -14,7 +14,7 @@ let timer;
 function load() {
   try {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    if (data && Array.isArray(data.questions) && data.questions.every(validQuestion)) return {
+    if (data && Array.isArray(data.questions) && data.questions.length <= 1000 && data.questions.every(validQuestion)) return {
       questions: data.questions.slice(0, 1000),
       attempts: Array.isArray(data.attempts) ? data.attempts.filter(a => a && Array.isArray(a.items) && Number.isInteger(a.correct)).slice(0, 100) : [],
       session: data.session && Array.isArray(data.session.questions) && data.session.questions.every(validQuestion) && data.session.questions.length && data.session.questions.length <= 1000 ? data.session : null
@@ -169,6 +169,7 @@ form.addEventListener('submit', event => {
   event.preventDefault();
   try {
     const id = form.elements.id.value;
+    if (!id && state.questions.length >= 1000) throw new Error('This bank can hold up to 1,000 questions.');
     const q = makeQuestion({ topic: form.elements.topic.value, prompt: form.elements.prompt.value, options: Array.from({ length: 4 }, (_, i) => form.elements[`option-${i}`].value), answer: form.elements.answer.value, explanation: form.elements.explanation.value }, id || undefined);
     if (id) state.questions = state.questions.map(item => item.id === id ? q : item);
     else state.questions.unshift(q);
@@ -183,8 +184,13 @@ document.querySelector('#import-file').addEventListener('change', async event =>
     const data = JSON.parse(await file.text());
     if (data?.app !== 'ExamForge' || !Array.isArray(data.questions) || data.questions.length > 1000 || !data.questions.every(validQuestion)) throw new Error('This is not a valid ExamForge question bank.');
     const ids = new Set(state.questions.map(q => q.id));
-    let added = 0; for (const q of data.questions) if (!ids.has(q.id)) { state.questions.push(q); ids.add(q.id); added++; }
-    save(); render(); showToast(added ? `Imported ${added} question${added === 1 ? '' : 's'}.` : 'These questions are already in your bank.');
+    const additions = data.questions.filter(q => {
+      if (ids.has(q.id)) return false;
+      ids.add(q.id); return true;
+    });
+    if (state.questions.length + additions.length > 1000) throw new Error('This bank can hold up to 1,000 questions.');
+    state.questions.push(...additions);
+    save(); render(); showToast(additions.length ? `Imported ${additions.length} question${additions.length === 1 ? '' : 's'}.` : 'These questions are already in your bank.');
   } catch (error) { showToast(error.message || 'Could not read that file.'); }
   event.target.value = '';
 });
